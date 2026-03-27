@@ -107,5 +107,6 @@ class Parser:
                 self.p1()
 
     def parse(self):
-        self.p0()
+        while not self.match(TokenType.EOF):
+            self.p0()
         return self.cites

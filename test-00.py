@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 
-tree = ET.parse("bbe.xml")
+tree = ET.parse("kjv.xml")
 root = tree.getroot()
 
 for book in root.findall("BIBLEBOOK"):
