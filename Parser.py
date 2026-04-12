@@ -15,8 +15,8 @@ class Parser:
         self.svnum=None
         self.evnum=None
 
-    def look(self):
-        return self.tokens[self.i]
+    def look(self, offset = 0):
+        return self.tokens[self.i + offset]
 
     def next(self):
         self.i+=1
@@ -27,8 +27,8 @@ class Parser:
     def getText(self):
         return self.tokens[self.i].text
 
-    def match(self,type):
-        return self.look().type == type
+    def match(self, type, offset = 0):
+        return self.look(offset).type == type
 
     def p99(self):
         self.cites.append(Cite(self.bname,self.bsname,self.scnum,self.ecnum,self.svnum,self.evnum))
@@ -60,7 +60,10 @@ class Parser:
         elif self.match(TokenType.COMMA):
             self.p99()
             self.next()
-            self.p3()
+            if self.match(TokenType.NUMBER) and self.match(TokenType.COLON,1):
+                self.p1()
+            else:
+                self.p3()
         else:
             self.p99()
 

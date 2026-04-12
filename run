@@ -1,4 +1,5 @@
 #!/bin/sh
-./bot.py irc.undernet.org:6667 "#pantasya" frio
+. .venv/bin/activate
+nohup ./bot.py irc.undernet.org:6667 "#pantasya" frio &
 #./bot.py 127.0.0.1:6667 "#pantasya" frio
 
