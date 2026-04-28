@@ -1,0 +1,4 @@
+#!/bin/sh
+. venv/bin/activate
+./bot irc.undernet.org:6667 "#pantasya" frio
+
