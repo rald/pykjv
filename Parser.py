@@ -18,98 +18,73 @@ class Parser:
     def look(self, offset = 0):
         return self.tokens[self.i + offset]
 
-    def next(self):
-        self.i+=1
+    def next(self,offset=1):
+        self.i+=offset
 
-    def getType(self):
-        return self.tokens[self.i].type
+    def getType(self,offset=0):
+        return self.tokens[self.i+offset].type
 
-    def getText(self):
-        return self.tokens[self.i].text
+    def getText(self,offset=0):
+        return self.tokens[self.i+offset].text
 
     def match(self, type, offset = 0):
         return self.look(offset).type == type
 
-    def p99(self):
+    def add(self):
         self.cites.append(Cite(self.bname,self.bsname,self.scnum,self.ecnum,self.svnum,self.evnum))
 
-    def p7(self):
-        if self.match(TokenType.COMMA):
-            self.next()
-            self.p3()
-
-    def p6(self):
-        if self.match(TokenType.NUMBER):
-            self.ecnum=int(self.getText())
-            self.svnum=0
-            self.evnum=0
-            self.next()
-            self.p99()
-
-    def p5(self):
-        if self.match(TokenType.NUMBER):
-            self.evnum=int(self.getText())
-            self.next()
-            self.p99()
-            self.p7()
-
-    def p4(self):
-        if self.match(TokenType.DASH):
-            self.next()
-            self.p5()
-        elif self.match(TokenType.COMMA):
-            self.p99()
-            self.next()
-            if self.match(TokenType.NUMBER) and self.match(TokenType.COLON,1):
-                self.p1()
-            else:
-                self.p3()
-        else:
-            self.p99()
-
-    def p3(self):
-        if self.match(TokenType.NUMBER):
-            self.svnum=int(self.getText())
-            self.evnum=self.svnum
-            self.next()
-            self.p4()
-
-    def p2(self):
-        if self.match(TokenType.COLON):
-            self.next()
-            self.p3()
-        elif self.match(TokenType.DASH):
-            self.next()
-            self.p6()
-        else:
-            self.svnum=0
-            self.evnum=0
-            self.p99()
-
-    def p1(self):
-        if self.match(TokenType.NUMBER):
-            self.scnum=int(self.getText())
-            self.ecnum=self.scnum
-            self.next()
-            self.p2()
-
-    def p0(self):
-        if self.match(TokenType.STRING):
-            self.bname=self.getText()
-            self.bsname=self.getText()
-            self.next()
-            self.p1()
-        elif self.match(TokenType.NUMBER):
-            self.bname=self.getText()+" "
-            self.bsname=self.getText()
-            self.next();
-            if self.match(TokenType.STRING):
-                self.bname+=self.getText()
-                self.bsname+=self.getText()
-                self.next()
-                self.p1()
-
     def parse(self):
-        while not self.match(TokenType.EOF):
-            self.p0()
+
+        if self.match(TokenType.NUMBER,0) and \
+            self.match(TokenType.STRING,1) and \
+            self.match(TokenType.NUMBER,2) and \
+            self.match(TokenType.COLON,3) and \
+            self.match(TokenType.NUMBER,4) and \
+            self.match(TokenType.DASH,5) and \
+            self.match(TokenType.NUMBER,6):
+            self.bname=self.getText(0)+" "+self.getText(1)
+            self.bsname=self.getText(0)+self.getText(1)
+            self.scnum=int(self.getText(2))
+            self.ecnum=self.scnum;
+            self.svnum=int(self.getText(4))
+            self.evnum=int(self.getText(6))
+            self.add()
+        elif self.match(TokenType.STRING,0) and \
+            self.match(TokenType.NUMBER,1) and \
+            self.match(TokenType.COLON,2) and \
+            self.match(TokenType.NUMBER,3) and \
+            self.match(TokenType.DASH,4) and \
+            self.match(TokenType.NUMBER,5):
+            self.bname=self.getText(0)
+            self.bsname=self.getText(0)
+            self.scnum=int(self.getText(1))
+            self.ecnum=self.scnum;
+            self.svnum=int(self.getText(3))
+            self.evnum=int(self.getText(5))
+            self.add()
+        elif self.match(TokenType.NUMBER,0) and \
+            self.match(TokenType.STRING,1) and \
+            self.match(TokenType.NUMBER,2) and \
+            self.match(TokenType.COLON,3) and \
+            self.match(TokenType.NUMBER,4):
+            self.bname=self.getText(0)+" "+self.getText(1)
+            self.bsname=self.getText(0)+self.getText(1);
+            self.scnum=int(self.getText(2))
+            self.ecnum=self.scnum;
+            self.svnum=int(self.getText(4))
+            self.evnum=self.svnum
+            self.add()
+        elif self.match(TokenType.STRING,0) and \
+            self.match(TokenType.NUMBER,1) and \
+            self.match(TokenType.COLON,2) and \
+            self.match(TokenType.NUMBER,3):
+            self.bname=self.getText(0)
+            self.bsname=self.getText(0)
+            self.scnum=int(self.getText(1))
+            self.ecnum=self.scnum;
+            self.svnum=int(self.getText(3))
+            self.evnum=self.svnum
+            self.add()
+
+
         return self.cites

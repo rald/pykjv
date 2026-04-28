@@ -11,6 +11,9 @@ class Passage:
     def __repr__(self):
         return f"{self.bname} {self.cnum}:{self.vnum} -> {self.text}"
 
+    def __str__(self):
+        return f"{self.bname} {self.cnum}:{self.vnum} -> {self.text}"
+
     @staticmethod
     def find(cite):
 
